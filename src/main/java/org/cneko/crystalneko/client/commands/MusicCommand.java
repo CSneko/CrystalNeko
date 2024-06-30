@@ -7,15 +7,17 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import org.cneko.crystalneko.client.music.MusicPlayer;
 
-import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class MusicCommand {
     public static void init(){
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             dispatcher.register(LiteralArgumentBuilder.<FabricClientCommandSource>literal("music")
-                    .then(argument("music", StringArgumentType.greedyString()))
+                    .then(argument("music", StringArgumentType.greedyString())
                             .executes(MusicCommand::playMusic)
+                    )
             );
         });
     }
