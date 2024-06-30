@@ -1,4 +1,5 @@
 {
   "command.neko.music.play.successful": "播放音乐成功",
-  "command.neko.music.play.failed": "播放音乐失败"
+  "command.neko.music.play.failed": "播放音乐失败",
+  "command.neko.music.stop.successful": "成功停止音乐"
 }
