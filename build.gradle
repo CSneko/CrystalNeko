@@ -1,7 +1,20 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.github.johnrengelman:shadow:8.1.1'
+    }
+}
 plugins {
     id 'fabric-loom' version '1.6-SNAPSHOT'
-    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
 
 version = project.mod_version
 group = project.maven_group
@@ -11,11 +24,15 @@ base {
 }
 
 repositories {
+    mavenCentral()
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -26,8 +43,18 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "javazoom:jlayer:1.0.1"
+    //modApi files('libs/fabric-language-kotlin-1.11.0+kotlin.2.0.0.jar')
+    //modApi files('libs/jlayer-1.0.1.jar')
 }
 
+
+shadowJar {
+    dependencies {
+        include(dependency(name: 'jlayer-1.0.1'))
+    }
+}
 processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
@@ -70,20 +97,6 @@ jar {
     }
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
-    }
+kotlin {
+    jvmToolchain(17)
 }

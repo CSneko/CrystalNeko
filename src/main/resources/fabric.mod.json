@@ -4,18 +4,36 @@
   "version": "${version}",
   "name": "CrystalNeko",
   "description": "CrystalNeko",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    "CrystalNeko"
+  ],
+  "contact": {
+    "repo": "https://github.com/CSNeko/CrystalNeko"
+  },
   "license": "unlicense",
   "icon": "assets/crystalneko/icon.png",
   "environment": "*",
-  "entrypoints": {},
+  "entrypoints": {
+    "client": [
+      "org.cneko.crystalneko.client.CrystalNekoClient"
+    ],
+    "main": [
+      "org.cneko.crystalneko.CrystalNeko"
+    ]
+  },
   "mixins": [
     "crystalneko.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
-    "fabric": "*",
-    "minecraft": "${minecraft_version}"
-  }
+    "fabricloader": "*",
+    "fabric": "*"
+  },
+  "jars": [
+    {
+      "file": "META-INF/jars/fabric-language-kotlin-1.11.0+kotlin.2.0.0.jar"
+    },
+    {
+      "file": "META-INF/jars/jlayer-1.0.1.jar"
+    }
+  ]
 }
