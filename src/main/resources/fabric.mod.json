@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "crystalneko",
+  "version": "${version}",
+  "name": "CrystalNeko",
+  "description": "CrystalNeko",
+  "authors": [],
+  "contact": {},
+  "license": "unlicense",
+  "icon": "assets/crystalneko/icon.png",
+  "environment": "*",
+  "entrypoints": {},
+  "mixins": [
+    "crystalneko.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
