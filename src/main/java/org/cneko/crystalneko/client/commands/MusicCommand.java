@@ -11,7 +11,6 @@ import org.cneko.crystalneko.client.music.MusicThread;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.minecraft.network.chat.Component.translatable;
-import static net.minecraft.network.chat.FormattedText.composite;
 
 public class MusicCommand {
     public static void init(){
