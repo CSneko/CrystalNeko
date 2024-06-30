@@ -11,12 +11,13 @@ import org.cneko.crystalneko.client.music.MusicThread;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.minecraft.network.chat.Component.translatable;
-
+import static org.cneko.crystalneko.client.util.CommandUtil.*;
 public class MusicCommand {
     public static void init(){
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             dispatcher.register(LiteralArgumentBuilder.<FabricClientCommandSource>literal("music")
                     .then(argument("music", StringArgumentType.greedyString())
+                            .suggests(getAllMusic)
                             .executes(MusicCommand::playMusic)
                     )
                     .then(LiteralArgumentBuilder.<FabricClientCommandSource>literal("stop")
@@ -36,6 +37,7 @@ public class MusicCommand {
         String music = StringArgumentType.getString(context, "music");
         // 播放音乐
         MusicPlayer musicPlayer = new MusicPlayer(music);
+        musicPlayer.setMcPlayer(context.getSource().getPlayer());
         boolean result = musicPlayer.play();
         if (result) {
             context.getSource().sendFeedback(translatable("command.neko.music.play.successful"));

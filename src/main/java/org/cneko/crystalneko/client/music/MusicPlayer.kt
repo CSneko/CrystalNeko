@@ -7,15 +7,12 @@ import org.cneko.crystalneko.util.FileUtil
 class MusicPlayer(var name: String) {
     data class LyricLine(val timeMillis: Long, val text: String)
     companion object{
-        var musicPath: String = "music/"
+        var musicPath: String = "crystalneko/music/"
         var midiPath: String = musicPath + "midi/"
         var mp3Path: String = musicPath + "mp3/"
     }
 
     var mcPlayer: Player? = null
-    fun setMCPlayer(player: Player){
-        mcPlayer = player
-    }
     fun play(): Boolean {
         // 先停止播放现有的音乐
         MusicThread.stopPlay()
@@ -47,7 +44,9 @@ class MusicPlayer(var name: String) {
             emptyList()
         }
     }
-    fun showLyrics(lyric : String){
+    fun showLyrics(l : String){
+        val lyric = "§a$l"
+        println(lyric)
         // 如果有玩家参数,则将歌词发给玩家
         if(mcPlayer!=null){
             mcPlayer?.displayClientMessage(Component.literal(lyric), true)
