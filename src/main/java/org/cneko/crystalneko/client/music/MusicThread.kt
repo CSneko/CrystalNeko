@@ -9,6 +9,7 @@ import javax.sound.midi.MidiSystem
 import javazoom.jl.player.Player
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.concurrent.thread
 
 class MusicThread {
     companion object {
@@ -22,8 +23,8 @@ class MusicThread {
         fun playMidi(file: String) {
             musicThreadExecutor.playMidi(file)
         }
-        fun playMp3(file: String) {
-            musicThreadExecutor.playMp3(file)
+        fun playMp3(file: String, player: MusicPlayer) {
+            musicThreadExecutor.playMp3(file,player)
         }
     }
 
@@ -32,7 +33,7 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
     private var mp3PlayerRef = AtomicReference<Player?>(null)
     var midiSequencer = MidiSystem.getSequencer()
     private var mp3Player: Player? = null
-
+    val shouldDisplayLyrics = AtomicBoolean(true)
     fun playMidi(file: String){
         isPlaying.set(true)
         midiSequencer.open()
@@ -44,7 +45,7 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
             isPlaying.set(false)
         }
     }
-    fun playMp3(file: String){
+    fun playMp3(file: String,p: MusicPlayer){
         Thread {
             try {
                 val inputStream = BufferedInputStream(FileInputStream(File(file)))
@@ -52,6 +53,25 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
                 isPlaying.set(true)
                 mp3PlayerRef.set(player)
                 player.play()
+                if(p.hasLyrics()){
+                    val lyrics = p.getLyrics()
+                    val startTime = System.currentTimeMillis() // 记录播放开始的时间
+                    // 创建一个新的线程来处理歌词显示
+                    val lyricDisplayThread = thread {
+                        lyrics.forEach { lyricLine ->
+                            // 计算歌词应该显示的实际时间
+                            val displayTime = lyricLine.timeMillis - startTime
+                            // 等待直到达到该歌词的显示时间
+                            Thread.sleep(displayTime - System.currentTimeMillis())
+                            if (shouldDisplayLyrics.get()) {
+                                // 把歌词发送到播放器
+                                p.showLyrics(lyricLine.text)
+                            }else {
+                                shutdown()
+                            }
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -79,6 +99,7 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
             }
             isPlaying.set(false)
         }
+        shouldDisplayLyrics.set(false)
     }
 }
 
