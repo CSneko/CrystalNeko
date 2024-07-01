@@ -13,7 +13,7 @@ import kotlin.concurrent.thread
 
 class MusicThread {
     companion object {
-        var musicThreadExecutor = MusicThreadExecutor()
+        val musicThreadExecutor = MusicThreadExecutor()
         fun isPlaying(): Boolean {
             return musicThreadExecutor.isPlaying.get()
         }
@@ -52,26 +52,26 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
                 val player = Player(inputStream)
                 isPlaying.set(true)
                 mp3PlayerRef.set(player)
-                player.play()
                 if(p.hasLyrics()){
-                    val lyrics = p.getLyrics()
-                    val startTime = System.currentTimeMillis() // 记录播放开始的时间
                     // 创建一个新的线程来处理歌词显示
-                    val lyricDisplayThread = thread {
-                        lyrics.forEach { lyricLine ->
-                            // 计算歌词应该显示的实际时间
-                            val displayTime = lyricLine.timeMillis - startTime
-                            // 等待直到达到该歌词的显示时间
-                            Thread.sleep(displayTime - System.currentTimeMillis())
-                            if (shouldDisplayLyrics.get()) {
-                                // 把歌词发送到播放器
-                                p.showLyrics(lyricLine.text)
-                            }else {
-                                shutdown()
+                    thread {
+                        // 获取歌词
+                        val lyrics = p.getLyrics()
+                        while (shouldDisplayLyrics.get()) {
+                            // 获取当前播放时间
+                            val currentTime = player.getPosition()
+                            // 显示与播放时间100ms内的歌词
+                            for (lyric in lyrics) {
+                                if (currentTime >= lyric.timeMillis - 100 && currentTime <= lyric.timeMillis + 100) {
+                                    p.showLyrics(lyric.text)
+                                }
                             }
                         }
+                        // 关闭线程
+                        shutdown()
                     }
                 }
+                player.play()
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

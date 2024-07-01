@@ -3,9 +3,9 @@ package org.cneko.crystalneko.client.music
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Player
 import org.cneko.crystalneko.util.FileUtil
-
+import org.cneko.crystalneko.client.music.LrcParser.Companion.LyricLine
 class MusicPlayer(var name: String) {
-    data class LyricLine(val timeMillis: Long, val text: String)
+
     companion object{
         var musicPath: String = "crystalneko/music/"
         var midiPath: String = musicPath + "midi/"
@@ -37,15 +37,15 @@ class MusicPlayer(var name: String) {
     }
     fun getLyrics(): List<LyricLine> {
         return if (FileUtil.isExist("$midiPath$name.lrc")) {
-            FileUtil.readLyrics("$midiPath$name.lrc")
+            LrcParser("$midiPath$name.lrc").parse()
         } else if (FileUtil.isExist("$mp3Path$name.lrc")) {
-            FileUtil.readLyrics("$mp3Path$name.lrc")
+            LrcParser("$mp3Path$name.lrc").parse()
         }else{
             emptyList()
         }
     }
     fun showLyrics(l : String){
-        val lyric = "§a$l"
+        val lyric = "§a♪$l♪"
         println(lyric)
         // 如果有玩家参数,则将歌词发给玩家
         if(mcPlayer!=null){

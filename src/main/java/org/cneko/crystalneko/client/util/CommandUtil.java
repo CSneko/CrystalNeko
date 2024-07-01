@@ -11,8 +11,8 @@ public class CommandUtil {
         // 获取所有midi文件
         List<String> midiFiles = FileUtil.Companion.scanMidiFiles();
         for (String midiFile : midiFiles) {
-            // 删除最后的.midi
-            builder.suggest(midiFile.substring(0, midiFile.length() - 5));
+            // 删除最后的.mid
+            builder.suggest(midiFile.substring(0, midiFile.length() - 4));
         }
         // 获取所有mp3文件
         List<String> mp3Files = FileUtil.Companion.scanMp3Files();
