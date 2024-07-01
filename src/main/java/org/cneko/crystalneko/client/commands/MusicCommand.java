@@ -40,9 +40,9 @@ public class MusicCommand {
         musicPlayer.setMcPlayer(context.getSource().getPlayer());
         boolean result = musicPlayer.play();
         if (result) {
-            context.getSource().sendFeedback(translatable("command.neko.music.play.successful"));
+            context.getSource().sendFeedback(translatable("command.neko.music.play.successful", music));
         } else {
-            context.getSource().sendFeedback(translatable("command.neko.music.play.failed"));
+            context.getSource().sendFeedback(translatable("command.neko.music.play.failed",music));
         }
         return 1;
     }

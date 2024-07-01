@@ -46,6 +46,7 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
         }
     }
     fun playMp3(file: String,p: MusicPlayer){
+        stopPlay()
         Thread {
             try {
                 val inputStream = BufferedInputStream(FileInputStream(File(file)))
@@ -53,10 +54,12 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
                 isPlaying.set(true)
                 mp3PlayerRef.set(player)
                 if(p.hasLyrics()){
+                    shouldDisplayLyrics.set(true)
                     // 创建一个新的线程来处理歌词显示
                     thread {
                         // 获取歌词
                         val lyrics = p.getLyrics()
+                        println("歌词组准备")
                         while (shouldDisplayLyrics.get()) {
                             // 获取当前播放时间
                             val currentTime = player.getPosition()
@@ -64,6 +67,9 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
                             for (lyric in lyrics) {
                                 if (currentTime >= lyric.timeMillis - 100 && currentTime <= lyric.timeMillis + 100) {
                                     p.showLyrics(lyric.text)
+                                    //　等待100ms
+                                    Thread.sleep(100)
+                                    break
                                 }
                             }
                         }
@@ -82,23 +88,21 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
     }
     // 停止播放正在播放的所有音乐
     fun stopPlay(){
-        if (isPlaying.get()) {
-            if (midiSequencer.isOpen) {
-                if (midiSequencer.isRunning) {
-                    midiSequencer.stop()
-                }
-                midiSequencer.close()
+        if (midiSequencer.isOpen) {
+            if (midiSequencer.isRunning) {
+                midiSequencer.stop()
             }
-
-            mp3PlayerRef.getAndSet(null)?.let { player ->
-                try {
-                    player.close()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            isPlaying.set(false)
+            midiSequencer.close()
         }
+
+        mp3PlayerRef.getAndSet(null)?.let { player ->
+            try {
+                player.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        isPlaying.set(false)
         shouldDisplayLyrics.set(false)
     }
 }

@@ -20,7 +20,8 @@ class FileUtil {
 
             if (folder.exists() && folder.isDirectory) {
                 folder.listFiles()?.forEach { file ->
-                    if (file.isFile && file.extension == "mid") {
+                    if (file.isFile) {
+                        // 只显示名称不显示路径
                         files.add(file.name)
                     }
                 }
@@ -30,15 +31,15 @@ class FileUtil {
         // 扫描midi文件夹下的所有文件
         fun scanMidiFiles(): List<String> {
             var files = scanFiles(MusicPlayer.midiPath)
-            // 排除.lrc文件
-            files = files.filter { !it.endsWith(".lrc") }
+            // 仅扫描.mid文件
+            files = files.filter { it.endsWith(".mid") }
             return files
         }
         // 扫描mp3文件夹下的所有文件
         fun scanMp3Files(): List<String> {
             var files = scanFiles(MusicPlayer.mp3Path)
-            // 排除.lrc文件
-            files = files.filter { !it.endsWith(".lrc") }
+            // 仅扫描.mp3文件
+            files = files.filter { it.endsWith(".mp3") }
             return files
         }
 

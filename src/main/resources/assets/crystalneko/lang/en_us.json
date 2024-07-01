@@ -1,5 +1,5 @@
 {
-  "command.neko.music.play.successful": "§b播放音乐成功",
-  "command.neko.music.play.failed": "§c播放音乐失败",
-  "command.neko.music.stop.successful": "§b成功停止音乐"
+  "command.neko.music.play.successful": "§d要开始播放%s§d啦",
+  "command.neko.music.play.failed": "§c哎呀，播放%s失败了呢",
+  "command.neko.music.stop.successful": "§d成功停止音乐啦"
 }

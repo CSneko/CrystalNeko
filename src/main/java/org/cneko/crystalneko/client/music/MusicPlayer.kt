@@ -46,7 +46,6 @@ class MusicPlayer(var name: String) {
     }
     fun showLyrics(l : String){
         val lyric = "§a♪$l♪"
-        println(lyric)
         // 如果有玩家参数,则将歌词发给玩家
         if(mcPlayer!=null){
             mcPlayer?.displayClientMessage(Component.literal(lyric), true)
