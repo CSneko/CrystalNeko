@@ -78,6 +78,7 @@ class MusicThreadExecutor : ThreadExecutor("MusicThread"){
                     }
                 }
                 player.play()
+                stopPlay()
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
